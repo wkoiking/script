@@ -4,7 +4,7 @@
 
 ## WSLのインストール
 
-powershellを管理者権限で実行します。
+powershellを管理者権限で起動して、下記のコマンドを実行します。
 
 ~~~
 PS> wsl --install
@@ -51,6 +51,8 @@ Ok, five modules loaded.
 
 # よく使うコマンド
 
+基本的なコマンドを下記に列挙します：
+
 ~~~
 ping "172.21.101.1"
 removeKnownHost "172.21.101.1"
@@ -63,7 +65,7 @@ killHascats "172.21.101.1"
 reboot "172.21.101.1"
 ~~~
 
-詳細は`/script/src/Script.hs`とか`/script/src/Util.hs`を参照してください。
+詳細は`/script/src/Script.hs`や`/script/src/Util.hs`を参照してください。
 
 # プロジェクト特有の設定
 
