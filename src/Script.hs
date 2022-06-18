@@ -18,6 +18,8 @@ srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2021-08-24-ew1-ahmedabad_v1.9"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew-ahmedabad"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-17-ew-ahmedabad"
 
+-- スクリプト
+
 stopAllServersAndWorkstations :: IO ()
 stopAllServersAndWorkstations = do
     sh $ do
@@ -31,8 +33,6 @@ stopAllServersAndWorkstations = do
     sh $ do
         targetHost <- getOnlyReachables allWorkstationsEW
         killHascats targetHost
-
--- ここでBackup!!!
 
 updateCentralServersAndTargetWorkstations :: IO ()
 updateCentralServersAndTargetWorkstations = do
@@ -55,6 +55,8 @@ startAllServersEW1AndWorkstationsEW1 = sh $ do
         when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
             reboot targetHost
             return ()
+
+-- よく使うIPアドレスのリストの定義
 
 centralServersEW1 :: [HostName]
 centralServersEW1 = makeHosts 1
@@ -93,28 +95,7 @@ allWorkstationsEW = nub $ concat
 allServersEW :: [HostName]
 allServersEW = makeHosts 1 [1..18]
 
-server :: [HostName] -> IO ()
-server targetHosts = sh $ do
-    targetHost <- getOnlyReachables targetHosts
-    printf ("Processing "%s%"\n") targetHost
-
---     removeKnownHost targetHost
---     sshCopyID targetHost
---     endServer targetHost
---     startServer targetHost
---     updateHascatsServer targetHost
---     reboot targetHost
-
-workstation :: [HostName] -> IO ()
-workstation targetHosts = sh $ do
-    targetHost <- getOnlyReachables targetHosts
-    printf ("Processing "%s%"\n") targetHost
-
---     removeKnownHost targetHost
---     sshCopyID targetHost
---     killHascats targetHost
---     updateHascatsWorkstation targetHost
---     reboot targetHost
+-- アップデートコマンド
 
 updateHascatsServer :: MonadIO io => HostName -> io ExitCode
 updateHascatsServer targetHost = do
