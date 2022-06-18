@@ -3,7 +3,7 @@
 
 name:                script
 version:             0.1
-synopsis:            For updating workstations and servers
+synopsis:            Update script
 -- description:         
 license:             BSD3
 license-file:        LICENSE

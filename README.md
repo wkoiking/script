@@ -1,10 +1,10 @@
 ﻿# インストール方法
 
-まずPCをインターネットに繋ぐ。
+まずPCをインターネットに繋ぎます。
 
 ## WSLのインストール
 
-powershellを管理者権限で実行。
+powershellを管理者権限で実行します。
 
 ~~~
 PS> wsl --install
@@ -13,7 +13,7 @@ PS> wsl # wslのシェルが開く
 
 ## stackのインストール
 
-以下のコマンドをwslのシェルで実行する。
+以下のコマンドをwslのシェルで実行します。
 
 ~~~
 $ curl -sSL https://get.haskellstack.org/ | sh
@@ -21,7 +21,7 @@ $ curl -sSL https://get.haskellstack.org/ | sh
 
 # 使い方
 
-以下のコマンドをwslのシェルで実行する。
+以下のコマンドをwslのシェルで実行します。
 
 ~~~
 $ git clone https://github.com/wkoiking/script.git
@@ -30,7 +30,7 @@ $ stack ghci # Haskellのインタプリタのプロンプトが開く。
 ~~~
 ※はじめは色々ダウンロードしてくるので少し時間がかかります。
 
-色々なHaskellの関数が使えるようになる。
+色々なHaskellの関数が使えるようになります。
 
 例：
 
@@ -39,10 +39,10 @@ GHCi> ping "172.21.101.1"
 ("172.21.101.1",ExitSuccess)
 ~~~
 
-もっと複雑なことがやりたくなったら、`/script/src/Script.hs`を
-お好みのテキストエディタで編集して自分でスクリプトを書く。
+もっと複雑なことがやりたくなったら、`/script/src/Script.hs`をお好みのテ
+キストエディタで編集して自分でスクリプトを書いてみてください。
 
-編集が完了したら、`:r`でインタプリタにリロードする。
+編集が完了したら、`:r`でインタプリタにリロードします。
 
 ~~~
 GHCi> :r
@@ -63,12 +63,11 @@ killHascats "172.21.101.1"
 reboot "172.21.101.1"
 ~~~
 
-詳細は`/script/src/Script.hs`とか`/script/src/Util.hs`を参照。
-
+詳細は`/script/src/Script.hs`とか`/script/src/Util.hs`を参照してください。
 
 # プロジェクト特有の設定
 
-`/script/src/Project.hs`をお好みのテキストエディタで修正する。
+`/script/src/Project.hs`をお好みのテキストエディタで修正します。
 
 例：
 
@@ -83,21 +82,21 @@ serverBinaryName :: FilePath
 serverBinaryName = "hascats-exe-svr-ew1"
 ~~~
 
-※`git branch -a`でそれらしいブランチがあればチェックアウトしてみると良い。
+※`git branch -a`でそれらしいブランチがあればチェックアウトして見てください。
 
-設定が完了したら、`:r`でインタプリタにリロードする。
+設定が完了したら、`:r`でインタプリタにリロードしてください。
 
 # SSHの公開鍵の登録
 
-初回の接続は公開鍵をリモートホストに登録する必要がある。
+初回の接続時は公開鍵をリモートホストに登録する必要があります。
 
 ~~~
 GHCi> sshCopyID "172.21.101.1"
 ~~~
 
-などとして登録できる。
+などとして鍵を登録できます。
 
-エラーが出たらとりあえず以下をやってからもう一度`sshCopyID`する
+エラーが出たらとりあえず以下をやってからもう一度`sshCopyID`してみてください。
 
 ~~~
 GHCi> removeKnownHost "172.21.101.1"
@@ -105,7 +104,7 @@ GHCi> removeKnownHost "172.21.101.1"
 
 # ローカルの実行体の場所を指定する
 
-`/script/src/Script.hs`内の以下の変数を書き換える：
+`/script/src/Script.hs`内の以下の変数を書き換えます：
 
 ~~~
 srcFileDir :: FilePath
