@@ -24,7 +24,8 @@ $ curl -sSL https://get.haskellstack.org/ | sh
 以下のコマンドをwslのシェルで実行する。
 
 ~~~
-$ cd <このリポジトリ>
+$ git clone https://github.com/wkoiking/script.git
+$ cd script
 $ stack ghci # Haskellのインタプリタのプロンプトが開く。
 ~~~
 ※はじめは色々ダウンロードしてくるので少し時間がかかります。
