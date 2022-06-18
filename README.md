@@ -52,6 +52,7 @@ Ok, five modules loaded.
 # よく使うコマンド
 
 ~~~
+ping "172.21.101.1"
 removeKnownHost "172.21.101.1"
 sshCopyID "172.21.101.1"
 endServer "172.21.101.1"
@@ -96,7 +97,7 @@ GHCi> sshCopyID "172.21.101.1"
 
 などとして登録できる。
 
-エラーが出たらとりあえず以下をやっておく。
+エラーが出たらとりあえず以下をやってからもう一度`sshCopyID`する
 
 ~~~
 GHCi> removeKnownHost "172.21.101.1"
