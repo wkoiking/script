@@ -20,38 +20,32 @@ srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-20-delhi-bin"
 stopAllServersAndWorkstations :: IO ()
 stopAllServersAndWorkstations = do
     sh $ do
-        targetHost <- getOnlyReachables allServersEW
-        if targetHost `elem` centralServersEW1
-            then do
-                echo "Waiting 60s ..."
-                endServer targetHost
-            else do
-                killHascats targetHost
+        targetHost <- getOnlyReachables allServers
+        echo "Waiting 60s ..."
+        endServer targetHost
     sh $ do
-        targetHost <- getOnlyReachables allWorkstationsEW
+        targetHost <- getOnlyReachables allWorkstations
         killHascats targetHost
 
 updateCentralServersAndTargetWorkstations :: IO ()
 updateCentralServersAndTargetWorkstations = do
     sh $ do
-        targetHost <- getOnlyReachables centralServersEW1
+        targetHost <- getOnlyReachables allServers
         updateHascatsServer targetHost
         startServer targetHost
     sh $ do
-        targetHost <- getOnlyReachables targetWorkstationsEW1
+        targetHost <- getOnlyReachables allWorkstations
         updateHascatsWorkstation targetHost
         reboot targetHost
 
-startAllServersEW1AndWorkstationsEW1 :: IO ()
-startAllServersEW1AndWorkstationsEW1 = sh $ do
+startAllServersAndWorkstations :: IO ()
+startAllServersAndWorkstations = sh $ do
     sh $ do
-        targetHost <- getOnlyReachables $ allServersEW1 \\ centralServersEW1
+        targetHost <- getOnlyReachables allServers
         startServer targetHost
     sh $ do
-        targetHost <- getOnlyReachables $ allWorkstationsEW1 \\ targetWorkstationsEW1
-        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
-            reboot targetHost
-            return ()
+        targetHost <- getOnlyReachables allWorkstations
+        reboot targetHost
 
 -- よく使うIPアドレスのリストの定義
 
