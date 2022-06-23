@@ -13,7 +13,7 @@ import Control.Monad
 import Data.List
 
 srcFileDir :: FilePath
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-20-delhi-bin"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-19-ns-ahmedabad"
 
 -- スクリプト
 
@@ -50,13 +50,21 @@ startAllServersAndWorkstations = sh $ do
 -- よく使うIPアドレスのリストの定義
 
 allServers :: [HostName]
-allServers = makeHosts 1 [1, 2]
+allServers = makeHosts 1 [1 .. 14]
 
 allWorkstations :: [HostName]
 allWorkstations = concat
-    [ makeHosts 2 [1, 2, 3, 4, 5, 6, 7, 8, 9, 41, 32, 33, 34, 35]
-    , makeHosts 4 [1..6]
-    , makeHosts 6 [1,2]
+    [ makeHosts 2 $ concat
+        [ [1, 2, 3, 8, 9, 10, 11, 12, 13, 16, 20, 22]
+        , [31..35]
+        , [40..60]
+        , [80..83]
+        ]
+    , makeHosts 4 $ concat
+        [ [1..5]
+        , [21, 22]
+        ]
+    , makeHosts 6 [3]
     ]
 
 -- アップデートコマンド

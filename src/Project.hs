@@ -4,10 +4,10 @@ import Prelude hiding (FilePath)
 import Turtle
 
 user :: Text
-user = "dmtc"
+user = "mega"
 password :: Text
-password = "dmtc2021"
+password = "mega2021"
 workstationBinaryName :: FilePath
-workstationBinaryName = "hascats-exe-ws-dhaka"
+workstationBinaryName = "hascats-exe-ws-ns"
 serverBinaryName :: FilePath
-serverBinaryName = "hascats-exe-svr-dhaka"
+serverBinaryName = "hascats-exe-svr-ns"
