@@ -17,12 +17,22 @@ srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-19-ns-ahmedabad"
 
 -- スクリプト
 
+sshCopyIdAll :: IO ()
+sshCopyIdAll = sh $ do
+        targetHost <- getOnlyReachables $ allServers ++ allWorkstations
+        removeKnownHost targetHost
+        sshCopyID targetHost
+
 stopAllServersAndWorkstations :: IO ()
 stopAllServersAndWorkstations = do
     sh $ do
         targetHost <- getOnlyReachables allServers
-        echo "Waiting 60s ..."
-        endServer targetHost
+        if targetHost `elem` centralServers
+            then do
+                echo "Waiting 60s ..."
+                endServer targetHost
+            else do
+                killHascats targetHost
     sh $ do
         targetHost <- getOnlyReachables allWorkstations
         killHascats targetHost
@@ -51,6 +61,9 @@ startAllServersAndWorkstations = sh $ do
 
 allServers :: [HostName]
 allServers = makeHosts 1 [1 .. 14]
+
+centralServers :: [HostName]
+centralServers = makeHosts 1 [1,2]
 
 allWorkstations :: [HostName]
 allWorkstations = concat
