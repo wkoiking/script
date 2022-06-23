@@ -68,7 +68,7 @@ centralServers = makeHosts 1 [1,2]
 allWorkstations :: [HostName]
 allWorkstations = concat
     [ makeHosts 2 $ concat
-        [ [1, 2, 3, 8, 9, 10, 11, 12, 13, 16, 20, 22]
+        [ [1, 2, 3, 8, 9, 10, 11, 13, 16, 20]
         , [31..35]
         , [40..60]
         , [80..83]
