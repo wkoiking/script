@@ -13,9 +13,15 @@ import Control.Monad
 import Data.List
 
 srcFileDir :: FilePath
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-20-delhi-bin"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-21-dhaka-bin"
 
 -- スクリプト
+
+sshCopyIdAll :: IO ()
+sshCopyIdAll = sh $ do
+        targetHost <- getOnlyReachables $ allServers ++ allWorkstations
+        removeKnownHost targetHost
+        sshCopyID targetHost
 
 stopAllServersAndWorkstations :: IO ()
 stopAllServersAndWorkstations = do
