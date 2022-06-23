@@ -85,7 +85,7 @@ getOnlyReachables targetIPs = do
             return host
         ExitFailure _ -> do
             printf (s%" is not reachable\n") host
-            mempty
+            empty
 
 areReachable :: [HostName] -> Shell ()
 areReachable targetIPs = do
