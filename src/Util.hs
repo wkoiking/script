@@ -87,8 +87,8 @@ getOnlyReachables targetIPs = do
             printf (s%" is not reachable\n") host
             empty
 
-areReachable :: [HostName] -> Shell ()
-areReachable targetIPs = do
+areReachable :: MonadIO io => [HostName] -> io ()
+areReachable targetIPs = sh $ do
     awaits <- mapM (fork . ping) targetIPs
     await <- select awaits
     (host, code) <- wait await

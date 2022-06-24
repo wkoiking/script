@@ -19,6 +19,14 @@ PS> wsl # wslのシェルが開く
 $ curl -sSL https://get.haskellstack.org/ | sh
 ~~~
 
+## Finger Printが不一致したときの確認をしなくする
+
+以下のコマンドをwslのシェルで実行します。
+
+~~~
+$ echo "StrictHostKeyChecking no" >> ~/.ssh/config
+~~~
+
 # 使い方
 
 以下のコマンドをwslのシェルで実行します。
