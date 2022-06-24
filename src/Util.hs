@@ -84,7 +84,7 @@ getOnlyReachables targetIPs = do
             printf ("Processing "%s%"\n") host
             return host
         ExitFailure _ -> do
-            printf (s%" is not reachable\n") host
+            printf (s%" is not reachable ... skipping\n") host
             empty
 
 areReachable :: MonadIO io => [HostName] -> io ()
