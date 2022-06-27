@@ -16,7 +16,7 @@ srcFileDir :: FilePath
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew1-ahmedabad_v2.0_RC"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2021-08-24-ew1-ahmedabad_v1.9"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew-ahmedabad"
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-17-ew-ahmedabad"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-27-ew-ahmedabad"
 
 -- スクリプト
 
@@ -39,16 +39,25 @@ stopAllServersAndWorkstations = do
         targetHost <- getOnlyReachables allWorkstations
         killHascats targetHost
 
+updateAllServersAndWorkstations :: IO ()
+updateAllServersAndWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables allServers
+        updateHascatsServer targetHost
+--         startServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables allWorkstations
+        updateHascatsWorkstation targetHost
+--         reboot targetHost
+
 updateCentralServersAndTargetWorkstations :: IO ()
 updateCentralServersAndTargetWorkstations = do
     sh $ do
         targetHost <- getOnlyReachables centralServersEW1
         updateHascatsServer targetHost
-        startServer targetHost
     sh $ do
         targetHost <- getOnlyReachables targetWorkstationsEW1
         updateHascatsWorkstation targetHost
-        reboot targetHost
 
 startAllServersEW1AndWorkstationsEW1 :: IO ()
 startAllServersEW1AndWorkstationsEW1 = sh $ do
@@ -60,6 +69,25 @@ startAllServersEW1AndWorkstationsEW1 = sh $ do
         when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
             reboot targetHost
             return ()
+
+startAllServersAndWorkstations :: IO ()
+startAllServersAndWorkstations = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables allServers
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables allWorkstations
+        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+            reboot targetHost
+            return ()
+
+rebootAllWorkstatoins :: IO ()
+rebootAllWorkstatoins = sh $ do
+    targetHost <- getOnlyReachables allWorkstations
+    when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+        reboot targetHost
+        return ()
 
 -- よく使うIPアドレスのリストの定義
 
@@ -95,7 +123,11 @@ allWorkstations = nub $ concat
     , makeHosts 2 [1, 2, 3, 8, 9, 10, 11, 13, 16, 20, 22, 31, 32, 33, 34, 35, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 80, 81, 82, 83]
     , makeHosts 4 [1, 2, 3, 4, 5, 6, 7, 20, 21, 22]
     , makeHosts 6 [3]
+    , makeHosts 30 [1 .. 7]
     ]
+
+centralServers :: [HostName]
+centralServers = makeHosts 1 [1,2,3,4]
 
 allServers :: [HostName]
 allServers = makeHosts 1 [1..18]

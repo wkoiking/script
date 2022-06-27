@@ -8,6 +8,6 @@ user = "mega"
 password :: Text
 password = "mega2018"
 workstationBinaryName :: FilePath
-workstationBinaryName = "hascats-exe-ws-ew1"
+workstationBinaryName = "hascats-exe-ws-ew"
 serverBinaryName :: FilePath
-serverBinaryName = "hascats-exe-svr-ew1"
+serverBinaryName = "hascats-exe-svr-ew"
