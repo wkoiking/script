@@ -20,6 +20,9 @@ srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-27-ew-ahmedabad"
 
 -- スクリプト
 
+removeKnownHosts :: IO ()
+removeKnownHosts = mapM_ removeKnownHost $ allServers ++ allWorkstations
+
 sshCopyIdAll :: IO ()
 sshCopyIdAll = sh $ do
     targetHost <- getOnlyReachables $ allServers ++ allWorkstations
