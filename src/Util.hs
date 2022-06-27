@@ -94,4 +94,4 @@ areReachable targetIPs = sh $ do
     (host, code) <- wait await
     case code of
         ExitSuccess -> printf (s%": success\n") host
-        ExitFailure _ -> printf (s%": failure\n") host
+        ExitFailure _ -> return () -- printf (s%": failure\n") host

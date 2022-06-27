@@ -13,7 +13,7 @@ import Control.Monad
 import Data.List
 
 srcFileDir :: FilePath
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-19-ns-ahmedabad"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-27-ns-ahmedabad"
 
 -- スクリプト
 
@@ -33,24 +33,23 @@ stopAllServersAndWorkstations = do
             else do
                 killHascats targetHost
     sh $ do
-        targetHost <- getOnlyReachables allWorkstations
+        targetHost <- getOnlyReachables $ allWorkstations
         killHascats targetHost
 
-updateCentralServersAndTargetWorkstations :: IO ()
-updateCentralServersAndTargetWorkstations = do
+updateAllServersAndWorkstations :: IO ()
+updateAllServersAndWorkstations = do
     sh $ do
         targetHost <- getOnlyReachables allServers
         updateHascatsServer targetHost
-        startServer targetHost
     sh $ do
         targetHost <- getOnlyReachables allWorkstations
         updateHascatsWorkstation targetHost
-        reboot targetHost
 
 startAllServersAndWorkstations :: IO ()
 startAllServersAndWorkstations = sh $ do
     sh $ do
         targetHost <- getOnlyReachables allServers
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
         startServer targetHost
     sh $ do
         targetHost <- getOnlyReachables allWorkstations
@@ -62,13 +61,14 @@ allServers :: [HostName]
 allServers = makeHosts 1 [1 .. 14]
 
 centralServers :: [HostName]
-centralServers = makeHosts 1 [1,2]
+centralServers = makeHosts 1 [1,2,3,4]
 
 allWorkstations :: [HostName]
 allWorkstations = concat
     [ makeHosts 2 $ concat
         [ [1, 2, 3, 8, 9, 10, 11, 13, 16, 20]
         , [31..35]
+        , [37]
         , [40..60]
         , [80..83]
         ]
