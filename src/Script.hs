@@ -16,9 +16,96 @@ srcFileDir :: FilePath
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew1-ahmedabad_v2.0_RC"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2021-08-24-ew1-ahmedabad_v1.9"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew-ahmedabad"
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-27-ew-ahmedabad"
-
+-- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-18-ew1-ahmedabad_v2.0_depot"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-07-18-ew-ahmedabad"
 -- スクリプト
+
+stopWorkstation120 :: IO ()
+stopWorkstation120 = do
+    sh $ do
+        targetHost <- getOnlyReachables $ makeHosts 2 [20]
+        killHascats targetHost
+
+updateWorkstation120 :: IO ()
+updateWorkstation120 = do
+    sh $ do
+        targetHost <- getOnlyReachables $ makeHosts 2 [20]
+        updateHascatsWorkstation targetHost
+
+startWorkstation120 :: IO ()
+startWorkstation120 = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ makeHosts 2 [20]
+        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+            reboot targetHost
+            return ()
+
+-- Non EW1
+
+stopCentralServers :: IO ()
+stopCentralServers = do
+    sh $ do
+        targetHost <- getOnlyReachables $ centralServersEW1
+        echo "Waiting 60s ..."
+        endServer targetHost
+
+stopNonEW1ServersAndWorkstations :: IO ()
+stopNonEW1ServersAndWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServers \\ allServersEW1
+        when (targetHost `elem` centralServersEW1) $ echo "Waiting 60s ..."
+        endServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        killHascats targetHost
+
+updateNonEW1ServersAndWorkstations :: IO ()
+updateNonEW1ServersAndWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServers \\ allServersEW1
+        updateHascatsServer targetHost
+--         startServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        updateHascatsWorkstation targetHost
+--         reboot targetHost
+
+startNonEW1ServersAndWorkstations :: IO ()
+startNonEW1ServersAndWorkstations = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServers \\ allServersEW1
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+            reboot targetHost
+            return ()
+
+-- Workstation Only
+
+stopNonEW1Workstations :: IO ()
+stopNonEW1Workstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        killHascats targetHost
+
+updateNonEW1Workstations :: IO ()
+updateNonEW1Workstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        updateHascatsWorkstation targetHost
+--         reboot targetHost
+
+startNonEW1Workstations :: IO ()
+startNonEW1Workstations = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+            reboot targetHost
+            return ()
+
+----------------------
 
 removeKnownHosts :: IO ()
 removeKnownHosts = mapM_ removeKnownHost $ allServers ++ allWorkstations
@@ -32,15 +119,29 @@ stopAllServersAndWorkstations :: IO ()
 stopAllServersAndWorkstations = do
     sh $ do
         targetHost <- getOnlyReachables allServers
+        when (targetHost `elem` centralServersEW1) $ echo "Waiting 60s ..."
+        endServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables allWorkstations
+        killHascats targetHost
+
+stopNonCentralServers :: IO ()
+stopNonCentralServers = do
+    sh $ do
+        targetHost <- getOnlyReachables $ makeHosts 1 [5, 6, 7, 8, 17, 18]
         if targetHost `elem` centralServersEW1
             then do
                 echo "Waiting 60s ..."
                 endServer targetHost
             else do
                 killHascats targetHost
+
+updateNonCentralServers :: IO ()
+updateNonCentralServers = do
     sh $ do
-        targetHost <- getOnlyReachables allWorkstations
-        killHascats targetHost
+        targetHost <- getOnlyReachables $ makeHosts 1 [5, 6, 7, 8, 17, 18]
+        updateHascatsServer targetHost
+--         startServer targetHost
 
 updateAllServersAndWorkstations :: IO ()
 updateAllServersAndWorkstations = do
@@ -53,14 +154,14 @@ updateAllServersAndWorkstations = do
         updateHascatsWorkstation targetHost
 --         reboot targetHost
 
-updateCentralServersAndTargetWorkstations :: IO ()
-updateCentralServersAndTargetWorkstations = do
-    sh $ do
-        targetHost <- getOnlyReachables centralServersEW1
-        updateHascatsServer targetHost
-    sh $ do
-        targetHost <- getOnlyReachables targetWorkstationsEW1
-        updateHascatsWorkstation targetHost
+-- updateCentralServersAndTargetWorkstations :: IO ()
+-- updateCentralServersAndTargetWorkstations = do
+--     sh $ do
+--         targetHost <- getOnlyReachables centralServersEW1
+--         updateHascatsServer targetHost
+--     sh $ do
+--         targetHost <- getOnlyReachables targetWorkstationsEW1
+--         updateHascatsWorkstation targetHost
 
 startAllServersEW1AndWorkstationsEW1 :: IO ()
 startAllServersEW1AndWorkstationsEW1 = sh $ do
@@ -85,12 +186,27 @@ startAllServersAndWorkstations = sh $ do
             reboot targetHost
             return ()
 
-rebootAllWorkstatoins :: IO ()
-rebootAllWorkstatoins = sh $ do
-    targetHost <- getOnlyReachables allWorkstations
-    when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
-        reboot targetHost
-        return ()
+startAllServers :: IO ()
+startAllServers = do
+    sh $ do
+        targetHost <- getOnlyReachables allServers
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
+
+startAllWorkstations :: IO ()
+startAllWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables allWorkstations
+        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+            reboot targetHost
+            return ()
+
+-- rebootAllWorkstatoins :: IO ()
+-- rebootAllWorkstatoins = sh $ do
+--     targetHost <- getOnlyReachables allWorkstations
+--     when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+--         reboot targetHost
+--         return ()
 
 -- よく使うIPアドレスのリストの定義
 
