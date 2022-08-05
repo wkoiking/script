@@ -13,7 +13,7 @@ import Control.Monad
 import Data.List
 
 srcFileDir :: FilePath
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-27-ns-ahmedabad"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-08-05-ns-ahmedabad"
 
 -- スクリプト
 
