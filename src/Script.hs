@@ -58,6 +58,26 @@ startAllServersAndWorkstations = sh $ do
         targetHost <- getOnlyReachables allWorkstations
         reboot targetHost
 
+-- Only workstations
+
+stopAllWorkstations :: IO ()
+stopAllWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations -- \\ makeHosts 2 [82]
+        killHascats targetHost
+
+updateAllWorkstations :: IO ()
+updateAllWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations -- \\ makeHosts 2 [82]
+        updateHascatsWorkstation targetHost
+
+startAllWorkstations :: IO ()
+startAllWorkstations = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstations -- \\ makeHosts 2 [82]
+        reboot targetHost
+
 -- よく使うIPアドレスのリストの定義
 
 allServers :: [HostName]
