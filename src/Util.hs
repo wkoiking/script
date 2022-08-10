@@ -52,6 +52,10 @@ chmodRemote :: MonadIO io => HostName -> FilePath -> Text -> io ExitCode
 chmodRemote targetIP dstFilePath permission = sshCmd targetIP cmdStr
  where cmdStr = format ("chmod "%s%" "%fp) permission dstFilePath
 
+chownRemote :: MonadIO io => HostName -> FilePath -> io ExitCode
+chownRemote targetIP dstFilePath = sshCmd targetIP cmdStr
+ where cmdStr = format ("echo "%s%" | sudo -S chown "%s%":"%s%" "%fp%" &>/dev/null") password user user dstFilePath
+
 makeBinaryFilePath :: FilePath -> FilePath
 makeBinaryFilePath binaryName = "/home" </> user' </> ".local/bin" </> binaryName
  where user' = fromString $ T.unpack user

@@ -11,13 +11,14 @@ import Util
 import Project
 import Control.Monad
 import Data.List
+import qualified Data.Text as T
 
 srcFileDir :: FilePath
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew1-ahmedabad_v2.0_RC"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2021-08-24-ew1-ahmedabad_v1.9"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew-ahmedabad"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-18-ew1-ahmedabad_v2.0_depot"
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-08-10-ew-ahmedabad"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-08-11-ew-ahmedabad"
 -- スクリプト
 
 stopWorkstation120 :: IO ()
@@ -30,6 +31,7 @@ updateWorkstation120 :: IO ()
 updateWorkstation120 = do
     sh $ do
         targetHost <- getOnlyReachables $ makeHosts 2 [20]
+        updateXSession targetHost
         updateHascatsWorkstation targetHost
 
 startWorkstation120 :: IO ()
@@ -66,7 +68,8 @@ updateNonEW1ServersAndWorkstations = do
         updateHascatsServer targetHost
 --         startServer targetHost
     sh $ do
-        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        targetHost <- getOnlyReachables $ (allWorkstations \\ allWorkstationsEW1) \\ ["172.21.102.57"]
+        updateXSession targetHost
         updateHascatsWorkstation targetHost
 --         reboot targetHost
 
@@ -77,7 +80,7 @@ startNonEW1ServersAndWorkstations = sh $ do
         when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
         startServer targetHost
     sh $ do
-        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        targetHost <- getOnlyReachables $ (allWorkstations \\ allWorkstationsEW1) \\ ["172.21.102.57"]
         when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
             reboot targetHost
             return ()
@@ -93,17 +96,41 @@ stopNonEW1Workstations = do
 updateNonEW1Workstations :: IO ()
 updateNonEW1Workstations = do
     sh $ do
-        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        targetHost <- getOnlyReachables $ (allWorkstations \\ allWorkstationsEW1) \\ ["172.21.102.57"]
+        updateXSession targetHost
         updateHascatsWorkstation targetHost
 --         reboot targetHost
 
 startNonEW1Workstations :: IO ()
 startNonEW1Workstations = sh $ do
     sh $ do
-        targetHost <- getOnlyReachables $ allWorkstations \\ allWorkstationsEW1
+        targetHost <- getOnlyReachables $ (allWorkstations \\ allWorkstationsEW1) \\ ["172.21.102.57"]
         when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
             reboot targetHost
             return ()
+
+--Server Only
+
+stopNonEW1Servers :: IO ()
+stopNonEW1Servers = do
+    sh $ do
+        targetHost <- getOnlyReachables $ (allServers \\ allServersEW1) \\ makeHosts 1 [3]
+        when (targetHost `elem` centralServersEW1) $ echo "Waiting 60s ..."
+        endServer targetHost
+
+updateNonEW1Servers :: IO ()
+updateNonEW1Servers = do
+    sh $ do
+        targetHost <- getOnlyReachables $ (allServers \\ allServersEW1) \\ makeHosts 1 [3]
+        updateHascatsServer targetHost
+--         startServer targetHost
+
+startNonEW1Servers :: IO ()
+startNonEW1Servers = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ (allServers \\ allServersEW1) \\ makeHosts 1 [3]
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
 
 ----------------------
 
@@ -151,6 +178,7 @@ updateAllServersAndWorkstations = do
 --         startServer targetHost
     sh $ do
         targetHost <- getOnlyReachables allWorkstations
+        updateXSession targetHost
         updateHascatsWorkstation targetHost
 --         reboot targetHost
 
@@ -264,3 +292,11 @@ updateHascatsWorkstation targetHost = do
     let srcFilePath = srcFileDir </> workstationBinaryName
     let dstFilePath = makeBinaryFilePath workstationBinaryName
     scp srcFilePath targetHost dstFilePath
+
+updateXSession :: MonadIO io => HostName -> io ExitCode
+updateXSession targetHost = do
+    let srcFilePath = srcFileDir </> ".xsession"
+    let dstFilePath = "/home" </> user' </> ".xsession"
+    chownRemote targetHost dstFilePath
+    scp srcFilePath targetHost dstFilePath
+ where user' = fromString $ T.unpack user
