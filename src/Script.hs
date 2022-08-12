@@ -18,7 +18,7 @@ srcFileDir :: FilePath
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2021-08-24-ew1-ahmedabad_v1.9"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-14-ew-ahmedabad"
 -- srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-06-18-ew1-ahmedabad_v2.0_depot"
-srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-08-11-ew-ahmedabad"
+srcFileDir = "/mnt/c/Users/wanag/Desktop/bin/2022-08-13-ew-ahmedabad"
 -- スクリプト
 
 stopWorkstation120 :: IO ()
@@ -129,6 +129,43 @@ startNonEW1Servers :: IO ()
 startNonEW1Servers = sh $ do
     sh $ do
         targetHost <- getOnlyReachables $ (allServers \\ allServersEW1) \\ makeHosts 1 [3]
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
+
+-- For EW1 Interface testing
+
+stopSVR101 :: IO ()
+stopSVR101 = do
+    sh $ do
+        targetHost <- getOnlyReachables ["172.21.101.1"]
+        when (targetHost `elem` centralServersEW1) $ echo "Waiting 60s ..."
+        endServer targetHost
+
+updateSVR101 :: IO ()
+updateSVR101 = do
+    sh $ do
+        targetHost <- getOnlyReachables ["172.21.101.1"]
+        updateHascatsServer targetHost
+--         startServer targetHost
+
+startSVR101 :: IO ()
+startSVR101 = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables ["172.21.101.1"]
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
+
+stopOtherServers :: IO ()
+stopOtherServers = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServersEW1 \\ ["172.21.101.1"]
+        when (targetHost `elem` centralServersEW1) $ echo "Waiting 60s ..."
+        endServer targetHost
+
+startOtherServers :: IO ()
+startOtherServers = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServersEW1 \\ ["172.21.101.1"]
         when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
         startServer targetHost
 
