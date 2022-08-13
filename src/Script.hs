@@ -42,6 +42,43 @@ startWorkstation120 = sh $ do
             reboot targetHost
             return ()
 
+-- EW1
+
+stopEW1ServersAndWorkstations :: IO ()
+stopEW1ServersAndWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServersEW1
+        when (targetHost `elem` centralServersEW1) $ echo "Waiting 60s ..."
+        endServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstationsEW1
+        killHascats targetHost
+
+updateEW1ServersAndWorkstations :: IO ()
+updateEW1ServersAndWorkstations = do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServersEW1
+        updateHascatsServer targetHost
+--         startServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstationsEW1
+        updateXSession targetHost
+        updateHascatsWorkstation targetHost
+--         reboot targetHost
+
+startEW1ServersAndWorkstations :: IO ()
+startEW1ServersAndWorkstations = sh $ do
+    sh $ do
+        targetHost <- getOnlyReachables $ allServersEW1
+        when (targetHost `elem` centralServers) $ echo "Waiting 60s ..."
+        startServer targetHost
+    sh $ do
+        targetHost <- getOnlyReachables $ allWorkstationsEW1
+        when (targetHost `notElem` makeHosts 2 [45, 41]) $ do
+            reboot targetHost
+            return ()
+
+
 -- Non EW1
 
 stopCentralServers :: IO ()
